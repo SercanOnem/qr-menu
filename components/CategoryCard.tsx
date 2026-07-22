@@ -1,55 +1,31 @@
 type Props = {
   icon: string;
   title: string;
-  count: number;
   desc: string;
 };
 
 export default function CategoryCard({
   icon,
   title,
-  count,
   desc,
 }: Props) {
   return (
-    <button className="w-full rounded-3xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-red-500 hover:bg-zinc-800">
-
-      <div className="flex items-center justify-between">
-
-        <div className="flex items-center gap-4">
-
-          <div className="text-4xl">
-            {icon}
-          </div>
-
-          <div className="text-left">
-
-            <h3 className="text-xl font-bold">
-              {title}
-            </h3>
-
-            <p className="text-sm text-zinc-400">
-              {desc}
-            </p>
-
-          </div>
-
+    <button className="w-[92%] mx-auto rounded-3xl border border-zinc-800 bg-zinc-900 px-5 py-4 transition-all duration-200 hover:border-red-500 hover:bg-zinc-800 hover:scale-[1.02]">
+      <div className="flex items-center gap-3">
+        <div className="text-3xl flex-shrink-0">
+          {icon}
         </div>
 
-        <div className="text-right">
+        <div className="text-left">
+          <h3 className="text-xl font-bold text-white">
+            {title}
+          </h3>
 
-          <div className="rounded-full bg-red-600 px-3 py-1 text-sm">
-            {count}
-          </div>
-
-          <div className="mt-2 text-xl">
-            ➜
-          </div>
-
+          <p className="text-sm text-zinc-400">
+            {desc}
+          </p>
         </div>
-
       </div>
-
     </button>
   );
 }

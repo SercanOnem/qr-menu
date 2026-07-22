@@ -1,19 +1,18 @@
 import Header from "@/components/Header";
-import Featured from "@/components/Featured";
 import CategoryCard from "@/components/CategoryCard";
 import { categories } from "@/data/categories";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-black text-white flex justify-center">
-      <div className="w-full max-w-lg mx-auto px-6 py-10">
+      <div className="w-full max-w-md mx-auto px-5 py-8">
         <Header />
 
-        <Featured />
-
-        <h2 className="mt-10 mb-6 text-center text-2xl font-black">
-          📋 Tüm Kategoriler
-        </h2>
+        <div className="mt-5 mb-6">
+          <h2 className="text-center text-2xl font-extrabold tracking-wide">
+            Menü
+          </h2>
+        </div>
 
         <div className="flex flex-col gap-4">
           {categories.map((item) => (
@@ -21,7 +20,6 @@ export default function Home() {
               key={item.title}
               icon={item.icon}
               title={item.title}
-              count={item.count}
               desc={item.desc}
             />
           ))}

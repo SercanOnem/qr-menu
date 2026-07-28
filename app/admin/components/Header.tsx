@@ -1,8 +1,24 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export default function Header() {
+  const pathname = usePathname();
+
+  const titles: Record<string, string> = {
+    "/admin": "Genel Bakış",
+    "/admin/categories": "Kategoriler",
+    "/admin/products": "Ürünler",
+    "/admin/settings": "Ayarlar",
+    "/admin/qr": "QR Kod",
+  };
+
+  const title = titles[pathname] ?? "Yönetim Paneli";
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-8">
       <h1 className="text-2xl font-bold text-white">
-        Genel Bakış
+        {title}
       </h1>
 
       <div className="flex items-center gap-3">

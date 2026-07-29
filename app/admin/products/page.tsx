@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 
 import { supabase } from "@/lib/supabase/client";
@@ -37,10 +37,10 @@ export default function ProductsPage() {
   const [editingProduct, setEditingProduct] =
     useState<Product | null>(null);
   const [search, setSearch] = useState("");
-  const router = useRouter();
-const searchParams = useSearchParams();
 
-const selectedCategory = searchParams.get("category");
+  const searchParams = useSearchParams();
+
+  const selectedCategory = searchParams.get("category");
 
   async function loadData() {
     setLoading(true);
@@ -90,32 +90,43 @@ const selectedCategory = searchParams.get("category");
   useEffect(() => {
     loadData();
   }, []);
-const filteredProducts = products.filter((product) => {
-  const searchMatch = product.name
-    .toLowerCase()
-    .includes(search.toLowerCase());
 
-  const categoryMatch =
-    !selectedCategory ||
-    product.category_id === Number(selectedCategory);
+  const filteredProducts = products.filter((product) => {
+    const searchMatch = product.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-  return searchMatch && categoryMatch;
-});
+    const categoryMatch =
+      !selectedCategory ||
+      product.category_id === Number(selectedCategory);
 
-const selectedCategoryName = categories.find(
-  (c) => c.id === Number(selectedCategory)
-)?.name;
- return (
+    return searchMatch && categoryMatch;
+  });
+
+  const selectedCategoryName = categories.find(
+    (c) => c.id === Number(selectedCategory)
+  )?.name; 
+
+   return (
     <div className="space-y-6">
+
+      {/* Başlık */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
         <div>
           <h1 className="text-3xl font-bold text-white">
             Ürünler
           </h1>
 
-          <p className="text-zinc-400">
+          <p className="mt-1 text-zinc-400">
             Menüdeki tüm ürünleri buradan yönetebilirsin.
           </p>
+
+          {selectedCategoryName && (
+            <div className="mt-3 inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400">
+              📂 Kategori: {selectedCategoryName}
+            </div>
+          )}
         </div>
 
         <button
@@ -123,34 +134,42 @@ const selectedCategoryName = categories.find(
             setEditingProduct(null);
             setModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
+          className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:bg-red-700 active:scale-95"
         >
           <Plus size={18} />
           Yeni Ürün
         </button>
+
       </div>
 
-      <div className="relative">
-  <Search
-    size={20}
-    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
-  />
+      {/* Arama Kutusu */}
 
-  <input
-    type="text"
-    value={search}
-    onChange={(e) => setSearch(e.target.value)}
-    placeholder="Ürün Ara..."
-    className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 text-base text-white placeholder:text-zinc-500 focus:border-red-500 focus:outline-none"
-  />
-</div>
+      <div className="relative">
+
+        <Search
+          size={20}
+          className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
+        />
+
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Ürün ara..."
+          className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 text-white placeholder:text-zinc-500 transition focus:border-red-500 focus:outline-none"
+        />
+
+      </div>
+
+      {/* İçerik */}
+
       {loading ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-8 text-center text-zinc-400">
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center text-zinc-400">
           Ürünler yükleniyor...
         </div>
       ) : filteredProducts.length === 0 ? (
-        <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-8 text-center text-zinc-500">
-          Henüz ürün bulunmuyor.
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center text-zinc-500">
+          Ürün bulunamadı.
         </div>
       ) : (
         <div className="grid gap-4">

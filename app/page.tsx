@@ -1,8 +1,37 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import Header from "@/components/Header";
 import CategoryCard from "@/components/CategoryCard";
-import { categories } from "@/data/categories";
+import { supabase } from "@/lib/supabase/client";
+
+type Category = {
+  id: number;
+  name: string;
+};
 
 export default function Home() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  async function loadCategories() {
+    const { data, error } = await supabase
+      .from("categories")
+      .select("id, name")
+      .order("name");
+
+    if (error) {
+      console.error("Supabase Error:", error);
+      return;
+    }
+
+    setCategories(data ?? []);
+  }
+
   return (
     <main className="min-h-screen bg-black text-white flex justify-center">
       <div className="w-full max-w-md mx-auto px-5 py-8">
@@ -17,10 +46,9 @@ export default function Home() {
         <div className="flex flex-col gap-4">
           {categories.map((item) => (
             <CategoryCard
-              key={item.title}
-              icon={item.icon}
-              title={item.title}
-              desc={item.desc}
+              key={item.id}
+              id={item.id}
+              title={item.name}
             />
           ))}
         </div>

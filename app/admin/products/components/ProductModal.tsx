@@ -1,6 +1,7 @@
 "use client";
 
 import { X } from "lucide-react";
+import { supabase } from "@/lib/supabase/client";
 import { useEffect, useState } from "react";
 
 interface Category {
@@ -43,6 +44,8 @@ export default function ProductModal({
   const [imageUrl, setImageUrl] = useState("");
   const [categoryId, setCategoryId] = useState(0);
   const [active, setActive] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState("");
 
   useEffect(() => {
     if (open) {
@@ -50,15 +53,50 @@ export default function ProductModal({
       setDescription(initialData?.description ?? "");
       setPrice(initialData?.price ?? 0);
       setImageUrl(initialData?.image_url ?? "");
+      setPreview(initialData?.image_url ?? "");
       setCategoryId(initialData?.category_id ?? 0);
       setActive(initialData?.is_active ?? true);
     }
   }, [open, initialData]);
 
   if (!open) return null;
+  async function uploadImage(file: File) {
+  try {
+    setUploading(true);
+
+    const fileName = `${Date.now()}-${file.name}`;
+
+    const { error } = await supabase.storage
+      .from("products")
+      .upload(fileName, file);
+
+    if (error) {
+      alert("Resim yüklenemedi.");
+      console.error(error);
+      return;
+    }
+
+    const { data } = supabase.storage
+      .from("products")
+      .getPublicUrl(fileName);
+
+    setImageUrl(data.publicUrl);
+    setPreview(data.publicUrl);
+  } finally {
+    setUploading(false);
+  }
+}
 
   function handleSave() {
-    if (!name.trim()) return;
+    if (!name.trim()) {
+  alert("Ürün adı zorunludur.");
+  return;
+}
+
+if (categoryId === 0) {
+  alert("Kategori seçiniz.");
+  return;
+}
 
     onSave({
       name,
@@ -94,19 +132,56 @@ export default function ProductModal({
 
         <div className="space-y-4">
 
-          <input
-            placeholder="Ürün Adı"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
-          />
+          <div className="space-y-3">
 
-          <textarea
-            placeholder="Açıklama"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="h-28 w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
-          />
+  <label className="text-sm font-medium text-white">
+    Ürün Fotoğrafı
+  </label>
+
+  {preview && (
+    <img
+      src={preview}
+      alt="Önizleme"
+      className="h-36 w-36 rounded-2xl border border-zinc-700 object-cover"
+
+    />
+  )}
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={async (e) => {
+      if (!e.target.files?.length) return;
+
+      await uploadImage(e.target.files[0]);
+    }}
+    className="block w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white
+    file:mr-4 file:rounded-lg file:border-0 file:bg-red-600 file:px-4 file:py-2
+    file:text-white hover:file:bg-red-700"
+  />
+
+  {uploading && (
+    <p className="text-sm text-yellow-400">
+      Fotoğraf yükleniyor...
+    </p>
+  )}
+
+</div>
+
+          <input
+  type="text"
+  placeholder="Ürün Adı"
+  value={name}
+  onChange={(e) => setName(e.target.value)}
+  className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
+/>
+
+<textarea
+  placeholder="Açıklama"
+  value={description}
+  onChange={(e) => setDescription(e.target.value)}
+  className="h-28 w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
+/>
 
           <input
             type="number"
@@ -133,12 +208,7 @@ export default function ProductModal({
             ))}
           </select>
 
-          <input
-            placeholder="Resim URL"
-            value={imageUrl}
-            onChange={(e) => setImageUrl(e.target.value)}
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-3 text-white"
-          />
+
 
           <label className="flex items-center gap-3 text-white">
 
@@ -165,9 +235,10 @@ export default function ProductModal({
 
           <button
             onClick={handleSave}
-            className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-700"
+            disabled={uploading}
+             className="rounded-xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Kaydet
+            {uploading ? "Yükleniyor..." : "Kaydet"}
           </button>
 
         </div>

@@ -7,14 +7,12 @@ type Props = {
   id: number;
   icon?: string;
   title: string;
-  desc?: string;
 };
 
 export default function CategoryCard({
   id,
   icon = "🍽️",
   title,
-  desc = "Kategori",
 }: Props) {
   return (
     <Link
@@ -28,15 +26,9 @@ export default function CategoryCard({
         </div>
 
         <div className="flex-1">
-
           <h3 className="text-xl font-bold text-white">
             {title}
           </h3>
-
-          <p className="mt-1 text-sm text-zinc-400">
-            {desc}
-          </p>
-
         </div>
 
         <ChevronRight

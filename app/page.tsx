@@ -19,18 +19,19 @@ export default function Home() {
   }, []);
 
   async function loadCategories() {
-    const { data, error } = await supabase
-      .from("categories")
-      .select("id, name")
-      .order("name");
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name")
+    .order("name");
 
-    if (error) {
-      console.error("Supabase Error:", error);
-      return;
-    }
-
-    setCategories(data ?? []);
+  if (error) {
+    alert(`Supabase Hatası: ${error.message}`);
+    console.error("Supabase Error:", error);
+    return;
   }
+
+  setCategories(data ?? []);
+}
 
   return (
     <main className="min-h-screen bg-black text-white flex justify-center">

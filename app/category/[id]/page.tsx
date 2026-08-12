@@ -83,11 +83,6 @@ export default function CategoryPage() {
           <h2 className="text-2xl font-extrabold tracking-wide">
             {category?.name}
           </h2>
-
-          <p className="mt-1 text-sm text-zinc-400">
-            Kategori
-          </p>
-
         </div>
 
         <div className="flex flex-col gap-4">

@@ -106,28 +106,25 @@ export default function CategoriesPage() {
 
   return (
     <div className="space-y-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">
-            Kategoriler
-          </h1>
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+  <div>
+    <p className="text-zinc-400">
+      Menü kategorilerini buradan yönetebilirsin.
+    </p>
+  </div>
 
-          <p className="mt-1 text-zinc-400">
-            Menü kategorilerini buradan yönetebilirsin.
-          </p>
-        </div>
+  <button
+    onClick={() => {
+      setEditingCategory(null);
+      setModalOpen(true);
+    }}
+    className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700 sm:w-auto"
+  >
+    <Plus size={18} />
+    Yeni Kategori
+  </button>
+</div>
 
-        <button
-          onClick={() => {
-            setEditingCategory(null);
-            setModalOpen(true);
-          }}
-          className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-700"
-        >
-          <Plus size={18} />
-          Yeni Kategori
-        </button>
-      </div>
 
       {loading ? (
         <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-10 text-center text-zinc-400">

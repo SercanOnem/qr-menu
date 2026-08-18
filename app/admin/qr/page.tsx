@@ -9,6 +9,9 @@ import {
   Check,
   Printer,
   QrCode,
+  Smartphone,
+  MapPin,
+  Link as LinkIcon,
 } from "lucide-react";
 
 export default function QRPage() {
@@ -57,7 +60,10 @@ export default function QRPage() {
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-white">QR Kod</h1>
+            <h1 className="text-3xl font-bold text-white">
+              QR Kod
+            </h1>
+
             <p className="mt-1 text-sm text-gray-400">
               Menünüz için QR kod oluşturun ve paylaşın.
             </p>
@@ -71,11 +77,11 @@ export default function QRPage() {
         <div className="rounded-3xl border border-white/10 bg-[#111113] p-6 md:p-8">
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-white">
-              Menü QR Kodu
+              Menü QR Kodunuz
             </h2>
 
             <p className="mt-1 text-sm text-gray-400">
-              Müşteriler bu QR kodu okutarak menünüze ulaşabilir.
+              Müşterileriniz QR kodu okutarak menünüze hızlıca ulaşabilir.
             </p>
           </div>
 
@@ -117,14 +123,23 @@ export default function QRPage() {
 
         {/* Menü Bilgileri */}
         <div className="rounded-3xl border border-white/10 bg-[#111113] p-6 md:p-8">
-          <h2 className="text-xl font-semibold text-white">
-            Menü Bağlantısı
-          </h2>
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-600/15 text-red-500">
+              <LinkIcon size={20} />
+            </div>
 
-          <p className="mt-1 text-sm text-gray-400">
-            QR kodun yönlendireceği adres.
-          </p>
+            <div>
+              <h2 className="text-xl font-semibold text-white">
+                Menü Linki
+              </h2>
 
+              <p className="mt-1 text-sm text-gray-400">
+                QR kodunuzun yönlendirdiği menü adresi.
+              </p>
+            </div>
+          </div>
+
+          {/* Menü URL */}
           <div className="mt-6">
             <label className="mb-2 block text-sm font-medium text-gray-300">
               Menü URL
@@ -144,7 +159,10 @@ export default function QRPage() {
               >
                 {copied ? (
                   <>
-                    <Check size={17} className="text-green-500" />
+                    <Check
+                      size={17}
+                      className="text-green-500"
+                    />
                     Kopyalandı
                   </>
                 ) : (
@@ -168,17 +186,64 @@ export default function QRPage() {
             Menüyü Aç
           </a>
 
-          {/* Bilgi */}
+          {/* Nasıl Kullanılır */}
           <div className="mt-8 rounded-2xl border border-red-500/10 bg-red-500/5 p-5">
             <h3 className="font-semibold text-white">
-              📱 Nasıl kullanılır?
+              QR Kod Nasıl Kullanılır?
             </h3>
 
-            <p className="mt-2 text-sm leading-6 text-gray-400">
-              QR kodu indirip masalara, menülere veya işletmenizin
-              görünür alanlarına yerleştirebilirsiniz. Müşteri QR kodu
-              telefonuyla okuttuğunda doğrudan menünüze ulaşır.
-            </p>
+            <div className="mt-5 space-y-4">
+              {/* Adım 1 */}
+              <div className="flex gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-red-500">
+                  <Download size={18} />
+                </div>
+
+                <div>
+                  <p className="font-medium text-white">
+                    QR kodu indirin
+                  </p>
+
+                  <p className="mt-1 text-sm leading-5 text-gray-400">
+                    QR kodunuzu indirin veya yazdırın.
+                  </p>
+                </div>
+              </div>
+
+              {/* Adım 2 */}
+              <div className="flex gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-red-500">
+                  <MapPin size={18} />
+                </div>
+
+                <div>
+                  <p className="font-medium text-white">
+                    Görünür bir yere yerleştirin
+                  </p>
+
+                  <p className="mt-1 text-sm leading-5 text-gray-400">
+                    Masalara, girişe veya menülerin üzerine koyun.
+                  </p>
+                </div>
+              </div>
+
+              {/* Adım 3 */}
+              <div className="flex gap-3">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-red-600/15 text-red-500">
+                  <Smartphone size={18} />
+                </div>
+
+                <div>
+                  <p className="font-medium text-white">
+                    Müşteriler menünüze ulaşsın
+                  </p>
+
+                  <p className="mt-1 text-sm leading-5 text-gray-400">
+                    QR kod okutulduğunda menünüz doğrudan açılır.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -92,38 +92,41 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = products.filter((product) => {
-    const searchMatch = product.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
+  const searchText = search.toLowerCase().trim();
 
-    const categoryMatch =
-      !selectedCategory ||
-      product.category_id === Number(selectedCategory);
+  const productName = product.name.toLowerCase();
+  const categoryName =
+    product.categories?.name?.toLowerCase() ?? "";
 
-    return searchMatch && categoryMatch;
-  });
+  const searchMatch =
+    !searchText ||
+    productName.includes(searchText) ||
+    categoryName.includes(searchText);
+
+  const categoryMatch =
+    !selectedCategory ||
+    product.category_id === Number(selectedCategory);
+
+  return searchMatch && categoryMatch;
+});
 
   const selectedCategoryName = categories.find(
     (c) => c.id === Number(selectedCategory)
-  )?.name; 
+  )?.name;
 
-   return (
-    <div className="space-y-6">
+  return (
+    <div className="min-w-0 space-y-6">
 
-      {/* Başlık */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      {/* Üst Alan */}
+      <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-        <div>
-          <h1 className="text-3xl font-bold text-white">
-            Ürünler
-          </h1>
-
-          <p className="mt-1 text-zinc-400">
+        <div className="min-w-0">
+          <p className="text-zinc-400">
             Menüdeki tüm ürünleri buradan yönetebilirsin.
           </p>
 
           {selectedCategoryName && (
-            <div className="mt-3 inline-flex items-center rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400">
+            <div className="mt-3 inline-flex max-w-full items-center rounded-full border border-red-500/30 bg-red-500/10 px-3 py-1 text-sm font-medium text-red-400">
               📂 Kategori: {selectedCategoryName}
             </div>
           )}
@@ -134,7 +137,7 @@ export default function ProductsPage() {
             setEditingProduct(null);
             setModalOpen(true);
           }}
-          className="flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition-all duration-200 hover:scale-[1.02] hover:bg-red-700 active:scale-95"
+          className="flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 font-semibold text-white transition-all duration-200 hover:bg-red-700 active:scale-95 md:w-auto"
         >
           <Plus size={18} />
           Yeni Ürün
@@ -142,27 +145,23 @@ export default function ProductsPage() {
 
       </div>
 
-      {/* Arama Kutusu */}
-
-      <div className="relative">
-
+      {/* Arama */}
+      <div className="relative min-w-0">
         <Search
           size={20}
           className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500"
         />
 
         <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Ürün ara..."
-          className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 text-white placeholder:text-zinc-500 transition focus:border-red-500 focus:outline-none"
-        />
-
+  type="text"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  placeholder="Ürün veya kategori ara..."
+  className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 text-white placeholder:text-zinc-500 transition-all duration-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none"
+/>
       </div>
 
       {/* İçerik */}
-
       {loading ? (
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center text-zinc-400">
           Ürünler yükleniyor...
@@ -172,7 +171,7 @@ export default function ProductsPage() {
           Ürün bulunamadı.
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid min-w-0 gap-4">
           {filteredProducts.map((product) => (
             <ProductCard
               key={product.id}

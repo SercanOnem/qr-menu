@@ -38,16 +38,12 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-12">
-      {/* Başlık */}
-      <div>
-        <h1 className="text-4xl font-bold text-white">
-          Genel Bakış
-        </h1>
-
-        <p className="mt-2 text-zinc-400">
-          Restoran yönetimine buradan hızlıca erişebilirsiniz.
-        </p>
-      </div>
+      {/* Açıklama */}
+<div>
+  <p className="text-zinc-400">
+    Restoran yönetimine buradan hızlıca erişebilirsiniz.
+  </p>
+</div>
 
       {/* İstatistik Kartları */}
  <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">

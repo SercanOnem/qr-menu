@@ -82,7 +82,7 @@ export default function ProductsPage() {
       console.error(productError);
     }
 
-    setProducts((productData as Product[]) ?? []);
+    setProducts((productData as unknown as Product[]) ?? []);
 
     setLoading(false);
   }

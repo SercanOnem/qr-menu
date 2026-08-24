@@ -12,7 +12,7 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen bg-zinc-900">
+    <div className="flex min-h-screen min-w-0 overflow-x-hidden bg-zinc-900">
       <Sidebar
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -21,8 +21,8 @@ export default function AdminLayout({
       <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
         <Header onMenuClick={() => setSidebarOpen(true)} />
 
-        <main className="flex-1 overflow-y-auto bg-zinc-900 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
-          <div className="mx-auto w-full max-w-7xl">
+        <main className="min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-zinc-900 px-4 py-4 sm:px-6 sm:py-6 lg:px-8">
+          <div className="mx-auto w-full max-w-7xl min-w-0">
             {children}
           </div>
         </main>

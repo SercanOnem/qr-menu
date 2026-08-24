@@ -19,7 +19,7 @@ export default function QRPage() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setMenuUrl("http://192.168.1.39:3000");
+    setMenuUrl("http://10.216.146.151:3000");
   }, []);
 
   const copyUrl = async () => {

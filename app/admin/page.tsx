@@ -37,28 +37,28 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-10">
       {/* Açıklama */}
-<div>
-  <p className="text-zinc-400">
-    Restoran yönetimine buradan hızlıca erişebilirsiniz.
-  </p>
-</div>
+      <div>
+        <p className="text-zinc-400">
+          Restoran yönetimine buradan hızlıca erişebilirsiniz.
+        </p>
+      </div>
 
       {/* İstatistik Kartları */}
- <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-  <StatCard
-    title="Toplam Kategori"
-    value={categoryCount}
-    icon={<LayoutGrid size={30} />}
-    onClick={() => router.push("/admin/categories")}
-  />
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <StatCard
+          title="Toplam Kategori"
+          value={categoryCount}
+          icon={<LayoutGrid size={30} />}
+          onClick={() => router.push("/admin/categories")}
+        />
 
-  <StatCard
-    title="Toplam Ürün"
-    value={productCount}
-    icon={<Package size={30} />}
-    onClick={() => router.push("/admin/products")}
+        <StatCard
+          title="Toplam Ürün"
+          value={productCount}
+          icon={<Package size={30} />}
+          onClick={() => router.push("/admin/products")}
         />
       </div>
 
@@ -69,7 +69,6 @@ export default function DashboardPage() {
         </h2>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-
           <button
             onClick={() => router.push("/admin/categories")}
             className="group cursor-pointer rounded-3xl border border-zinc-800 bg-zinc-900 p-7 transition-all duration-300 hover:-translate-y-2 hover:border-red-500 hover:shadow-[0_0_35px_rgba(239,68,68,0.20)] active:scale-[0.98]"
@@ -129,7 +128,6 @@ export default function DashboardPage() {
               Menü QR kodunu oluşturun.
             </p>
           </button>
-
         </div>
       </div>
     </div>

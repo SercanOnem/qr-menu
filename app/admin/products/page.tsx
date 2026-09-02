@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Plus, Search } from "lucide-react";
 
@@ -29,7 +29,7 @@ interface Product {
     | null;
 }
 
-export default function ProductsPage() {
+function ProductsContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,6 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
 
   const searchParams = useSearchParams();
-
   const selectedCategory = searchParams.get("category");
 
   async function loadData() {
@@ -92,23 +91,23 @@ export default function ProductsPage() {
   }, []);
 
   const filteredProducts = products.filter((product) => {
-  const searchText = search.toLowerCase().trim();
+    const searchText = search.toLowerCase().trim();
 
-  const productName = product.name.toLowerCase();
-  const categoryName =
-    product.categories?.name?.toLowerCase() ?? "";
+    const productName = product.name.toLowerCase();
+    const categoryName =
+      product.categories?.name?.toLowerCase() ?? "";
 
-  const searchMatch =
-    !searchText ||
-    productName.includes(searchText) ||
-    categoryName.includes(searchText);
+    const searchMatch =
+      !searchText ||
+      productName.includes(searchText) ||
+      categoryName.includes(searchText);
 
-  const categoryMatch =
-    !selectedCategory ||
-    product.category_id === Number(selectedCategory);
+    const categoryMatch =
+      !selectedCategory ||
+      product.category_id === Number(selectedCategory);
 
-  return searchMatch && categoryMatch;
-});
+    return searchMatch && categoryMatch;
+  });
 
   const selectedCategoryName = categories.find(
     (c) => c.id === Number(selectedCategory)
@@ -116,10 +115,8 @@ export default function ProductsPage() {
 
   return (
     <div className="min-w-0 space-y-6">
-
       {/* Üst Alan */}
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
         <div className="min-w-0">
           <p className="text-zinc-400">
             Menüdeki tüm ürünleri buradan yönetebilirsin.
@@ -142,7 +139,6 @@ export default function ProductsPage() {
           <Plus size={18} />
           Yeni Ürün
         </button>
-
       </div>
 
       {/* Arama */}
@@ -153,12 +149,12 @@ export default function ProductsPage() {
         />
 
         <input
-  type="text"
-  value={search}
-  onChange={(e) => setSearch(e.target.value)}
-  placeholder="Ürün veya kategori ara..."
-  className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 text-white placeholder:text-zinc-500 transition-all duration-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none"
-/>
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Ürün veya kategori ara..."
+          className="h-12 w-full rounded-2xl border border-zinc-800 bg-zinc-900 pl-12 pr-4 text-white placeholder:text-zinc-500 transition-all duration-200 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 focus:outline-none"
+        />
       </div>
 
       {/* İçerik */}
@@ -260,5 +256,21 @@ export default function ProductsPage() {
         }}
       />
     </div>
+  );
+}
+
+function ProductsLoading() {
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-10 text-center text-zinc-400">
+      Ürünler yükleniyor...
+    </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<ProductsLoading />}>
+      <ProductsContent />
+    </Suspense>
   );
 }

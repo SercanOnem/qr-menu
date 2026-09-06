@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, FolderOpen } from "lucide-react";
+import { Plus, FolderOpen, GripVertical } from "lucide-react";
 
 import CategoryCard from "./components/CategoryCard";
 import CategoryModal from "./components/CategoryModal";
@@ -11,6 +11,7 @@ import { supabase } from "@/lib/supabase/client";
 interface Category {
   id: number;
   name: string;
+  sort_order: number;
   products: {
     id: number;
   }[];
@@ -19,6 +20,8 @@ interface Category {
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [draggedId, setDraggedId] = useState<number | null>(null);
+  const [savingOrder, setSavingOrder] = useState(false);
 
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -33,10 +36,12 @@ export default function CategoriesPage() {
       .select(`
         id,
         name,
+        sort_order,
         products (
           id
         )
       `)
+      .order("sort_order", { ascending: true })
       .order("id", { ascending: true });
 
     if (error) {
@@ -63,17 +68,25 @@ export default function CategoriesPage() {
 
       if (error) {
         console.error(error);
+        alert("Kategori güncellenemedi.");
         return;
       }
     } else {
+      const nextSortOrder =
+        categories.length > 0
+          ? Math.max(...categories.map((category) => category.sort_order)) + 1
+          : 1;
+
       const { error } = await supabase
         .from("categories")
         .insert({
           name,
+          sort_order: nextSortOrder,
         });
 
       if (error) {
         console.error(error);
+        alert("Kategori eklenemedi.");
         return;
       }
     }
@@ -98,22 +111,82 @@ export default function CategoriesPage() {
 
     if (error) {
       console.error(error);
+      alert("Kategori silinemedi.");
       return;
     }
 
     await getCategories();
   }
 
+  async function handleDrop(targetId: number) {
+    if (
+      draggedId === null ||
+      draggedId === targetId ||
+      savingOrder
+    ) {
+      return;
+    }
+
+    const oldIndex = categories.findIndex(
+      (category) => category.id === draggedId
+    );
+
+    const newIndex = categories.findIndex(
+      (category) => category.id === targetId
+    );
+
+    if (oldIndex === -1 || newIndex === -1) {
+      return;
+    }
+
+    const reordered = [...categories];
+
+    const [movedCategory] = reordered.splice(oldIndex, 1);
+
+    reordered.splice(newIndex, 0, movedCategory);
+
+    setCategories(reordered);
+    setDraggedId(null);
+    setSavingOrder(true);
+
+    const updates = reordered.map((category, index) =>
+      supabase
+        .from("categories")
+        .update({
+          sort_order: index + 1,
+        })
+        .eq("id", category.id)
+    );
+
+    const results = await Promise.all(updates);
+
+    const hasError = results.some(
+      (result) => result.error
+    );
+
+    if (hasError) {
+      console.error("Kategori sıralaması kaydedilemedi.");
+      alert("Kategori sıralaması kaydedilemedi.");
+      await getCategories();
+    }
+
+    setSavingOrder(false);
+  }
+
   return (
     <div className="min-w-0 space-y-6">
-
       {/* Üst Alan */}
       <div className="flex min-w-0 flex-col gap-4 md:flex-row md:items-center md:justify-between">
-
         <div className="min-w-0">
           <p className="text-zinc-400">
             Menü kategorilerini buradan yönetebilirsin.
           </p>
+
+          {savingOrder && (
+            <p className="mt-2 text-sm font-medium text-red-400">
+              Kategori sıralaması kaydediliyor...
+            </p>
+          )}
         </div>
 
         <button
@@ -161,17 +234,46 @@ export default function CategoriesPage() {
       ) : (
         <div className="grid min-w-0 gap-4">
           {categories.map((category) => (
-            <CategoryCard
+            <div
               key={category.id}
-              id={category.id}
-              name={category.name}
-              productCount={category.products.length}
-              onEdit={() => {
-                setEditingCategory(category);
-                setModalOpen(true);
+              draggable={!savingOrder}
+              onDragStart={() => {
+                setDraggedId(category.id);
               }}
-              onDelete={() => handleDelete(category.id)}
-            />
+              onDragOver={(event) => {
+                event.preventDefault();
+              }}
+              onDrop={() => {
+                handleDrop(category.id);
+              }}
+              onDragEnd={() => {
+                setDraggedId(null);
+              }}
+              className={`flex min-w-0 items-stretch gap-2 transition-all ${
+                draggedId === category.id
+                  ? "opacity-40"
+                  : "opacity-100"
+              }`}
+            >
+              {/* Sürükleme alanı */}
+              <div className="flex w-10 shrink-0 cursor-grab items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-500 transition hover:border-red-500/50 hover:text-red-500 active:cursor-grabbing">
+                <GripVertical size={22} />
+              </div>
+
+              {/* Kategori */}
+              <div className="min-w-0 flex-1">
+                <CategoryCard
+                  id={category.id}
+                  name={category.name}
+                  productCount={category.products.length}
+                  onEdit={() => {
+                    setEditingCategory(category);
+                    setModalOpen(true);
+                  }}
+                  onDelete={() => handleDelete(category.id)}
+                />
+              </div>
+            </div>
           ))}
         </div>
       )}

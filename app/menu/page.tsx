@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabase/client";
 type Category = {
   id: number;
   name: string;
+  sort_order: number;
 };
 
 export default function MenuPage() {
@@ -21,8 +22,9 @@ export default function MenuPage() {
   async function loadCategories() {
     const { data, error } = await supabase
       .from("categories")
-      .select("id, name")
-      .order("name");
+      .select("id, name, sort_order")
+      .order("sort_order", { ascending: true })
+      .order("id", { ascending: true });
 
     if (error) {
       alert(`Supabase Hatası: ${error.message}`);

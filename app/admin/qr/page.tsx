@@ -19,7 +19,7 @@ export default function QRPage() {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    setMenuUrl("http://10.216.146.151:3000");
+    setMenuUrl("https://doydoy35.com.tr/menu");
   }, []);
 
   const copyUrl = async () => {
@@ -41,7 +41,7 @@ export default function QRPage() {
     if (!canvas) return;
 
     const link = document.createElement("a");
-    link.download = "menu-qr.png";
+    link.download = "doy-doy-35-menu-qr.png";
     link.href = canvas.toDataURL("image/png");
     link.click();
   };

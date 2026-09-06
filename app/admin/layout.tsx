@@ -1,6 +1,8 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState } from "react";
+
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 
@@ -9,7 +11,13 @@ export default function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Login sayfası admin panel layout'una dahil olmasın.
+  if (pathname === "/admin/login") {
+    return <>{children}</>;
+  }
 
   return (
     <div className="flex min-h-screen min-w-0 overflow-x-hidden bg-zinc-900">
